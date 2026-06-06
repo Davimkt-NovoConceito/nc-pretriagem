@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pré-Triagem | Novo Conceito Pesquisas</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:      #C8102E;
+    --red-dark: #9B0C22;
+    --red-soft: #F9E5E9;
+    --red-mid:  #EFB8C2;
+    --white:    #FFFFFF;
+    --off:      #FAF9F9;
+    --text:     #1A1A1A;
+    --muted:    #6B6B6B;
+    --border:   #E0D8D8;
+    --card:     #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--off);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--red);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 36px;
+    background: var(--off);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .header-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 36px 24px 56px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .header-text { flex: 1; }
+  .header-logo {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .header-logo img {
+    height: 110px;
+    width: auto;
+    display: block;
+    background: white;
+    border-radius: 12px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  }
+  @media (max-width: 480px) {
+    .header-inner { flex-direction: column-reverse; align-items: flex-start; gap: 16px; }
+    .header-logo img { height: 80px; }
+  }
+
+  /* Logo */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: white;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  /* SVG inline logo placeholder — replaced when logo is provided */
+  .logo-icon svg { width: 30px; height: 30px; }
+  .logo-name {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .logo-name span:first-child {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .logo-name span:last-child {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+  .header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(26px, 6vw, 38px);
+    color: white;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.6;
+    max-width: 500px;
+  }
+
+  /* ── Progress ── */
+  .progress-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 26px 24px 0;
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+  }
+  .progress-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .progress-count {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red-dark), var(--red));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── Form ── */
+  .form-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 24px 80px;
+  }
+
+  .section { display: none; animation: fadeUp 0.35s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--red);
+    background: var(--red-soft);
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 18px;
+    border: 1px solid var(--red-mid);
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 10px rgba(200,16,46,0.05);
+  }
+
+  .question-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .question-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  /* Inputs */
+  input[type="text"], input[type="email"], input[type="tel"],
+  input[type="number"], select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(200,16,46,0.1);
+  }
+  textarea { resize: vertical; min-height: 76px; }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 480px) { .input-row { grid-template-columns: 1fr; } }
+  .input-group { display: flex; flex-direction: column; gap: 5px; }
+  .input-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  /* Radio / Check options */
+  .options-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .option-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+    user-select: none;
+  }
+  .option-item:hover { border-color: var(--red-mid); background: var(--red-soft); }
+  .option-item.selected { border-color: var(--red); background: var(--red-soft); }
+  .option-item.selected .custom-radio { background: var(--red); border-color: var(--red); }
+  .option-item.selected .custom-radio::after { opacity: 1; }
+  .option-item.selected .custom-check { background: var(--red); border-color: var(--red); }
+  .option-item.selected .custom-check::after { opacity: 1; }
+
+  .custom-radio, .custom-check {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.15s;
+    background: white;
+  }
+  .custom-check { border-radius: 5px; }
+  .custom-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .custom-check::after {
+    content: '✓';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0;
+  }
+  input[type="radio"], input[type="checkbox"] { display: none; }
+  .option-text { font-size: 14px; color: var(--text); font-weight: 400; }
+
+  /* Alerts */
+  .alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 14px;
+  }
+  .alert-info  { background: var(--red-soft); color: var(--red-dark); border: 1px solid var(--red-mid); }
+  .alert-warn  { background: #FFF8E6; color: #7D4E00; border: 1px solid #F0D080; }
+  .alert-icon  { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .btn {
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: white;
+    flex: 1;
+    max-width: 210px;
+    box-shadow: 0 4px 14px rgba(200,16,46,0.3);
+  }
+  .btn-primary:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(200,16,46,0.38);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { color: var(--text); border-color: #aaa; }
+
+  /* Result cards */
+  .result-card, .encerrado {
+    display: none;
+    text-align: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 28px;
+    box-shadow: 0 4px 20px rgba(200,16,46,0.08);
+    animation: fadeUp 0.45s ease;
+  }
+  .result-icon { font-size: 52px; margin-bottom: 18px; }
+  .result-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+  .result-body {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 420px;
+    margin: 0 auto 24px;
+  }
+  .result-detail {
+    background: var(--red-soft);
+    border: 1px solid var(--red-mid);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.7;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  .result-detail strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--red);
+    font-weight: 700;
+  }
+  .result-meta {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .tag-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 10px;
+  }
+  .tag-badge.green { background: #E0F5EA; color: #1B7A42; }
+  .tag-badge.red   { background: var(--red-soft); color: var(--red-dark); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-text">
+      <h1>Formulário de<br>Pré-Triagem</h1>
+      <p>Pesquisa sobre Veículos Leves — Brasil &amp; Argentina<br>
+         Leva menos de 3 minutos. Responda com atenção.</p>
+    </div>
+    <div class="header-logo">
+      <img src="data:image/png;base64,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"
+           alt="Novo Conceito Recrutamento">
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-header">
+    <span class="progress-label">Progresso</span>
+    <span class="progress-count" id="progressCount">Etapa 1 de 5</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:5%"></div>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="form-wrap">
+
+  <!-- SEC 0: PAÍS -->
+  <div class="section active" id="sec0">
+    <div class="section-label">🌎 Localização</div>
+    <div class="card">
+      <div class="question-title">Em qual país você mora e trabalha?</div>
+      <div class="question-sub">Isso define quais perguntas serão exibidas.</div>
+      <div class="options-list" id="paisList">
+        <div class="option-item" data-group="pais" data-val="br" onclick="pick(this)">
+          <div class="custom-radio"></div>
+          <span class="option-text">🇧🇷 Brasil</span>
+        </div>
+        <div class="option-item" data-group="pais" data-val="ar" onclick="pick(this)">
+          <div class="custom-radio"></div>
+          <span class="option-text">🇦🇷 Argentina</span>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <div></div>
+      <button class="btn btn-primary" onclick="next(0)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- SEC 1: FILTRO -->
+  <div class="section" id="sec1">
+    <div class="section-label">🔒 Filtro Obrigatório</div>
+    <div class="card">
+      <div class="question-title">Alguém na sua casa ou no seu relacionamento próximo trabalha em alguma dessas áreas?</div>
+      <div class="question-sub">Marque SIM se houver qualquer pessoa próxima.</div>
+      <div class="options-list">
+        <div class="option-item" data-group="filtro" data-val="sim" onclick="pick(this)">
+          <div class="custom-radio"></div>
+          <span class="option-text">Pesquisa de mercado / Marketing / Publicidade / TV / Rádio</span>
+        </div>
+        <div class="option-item" data-group="filtro" data-val="nao" onclick="pick(this)">
+          <div class="custom-radio"></div>
+          <span class="option-text">Não, nenhuma dessas áreas</span>
+        </div>
+      </div>
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠️</span>
+        Se você ou alguém próximo trabalha nessas áreas, infelizmente não é possível participar desta pesquisa.
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(0)">← Voltar</button>
+      <button class="btn btn-primary" onclick="next(1)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- SEC 2: PERFIL + MODELO -->
+  <div class="section" id="sec2">
+    <div class="section-label">👤 Perfil Profissional</div>
+    <div class="card">
+      <div class="question-title">Como você se define profissionalmente?</div>
+      <div class="options-list">
+        <div class="option-item" data-group="perfil" data-val="autonomo" onclick="pick(this)">
+          <div class="custom-radio"></div>
+          <span class="option-text">Autônomo — uso caminhonete/caminhão no trabalho diário</span>
+        </div>
+        <div class="option-item" data-group="perfil" data-val="gestor" onclick="pick(this)">
+          <div class="custom-radio"></div>
+          <span class="option-text">Gestor / Responsável pela frota de uma empresa</span>
+        </div>
+        <div class="option-item" data-group="perfil" data-val="outro" onclick="pick(this)">
+          <div class="custom-radio"></div>
+          <span class="option-text">Outro perfil</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="question-title" id="tituloModelo">Qual o modelo / marca do veículo?</div>
+      <div class="question-sub" id="subModelo">Marque todos que forem relevantes.</div>
+      <div class="options-list" id="modeloList"></div>
+      <div class="alert alert-info" style="margin-top:12px">
+        <span class="alert-icon">ℹ️</span>
+        <span id="alertModeloTxt">Selecione ao menos um modelo para continuar.</span>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Voltar</button>
+      <button class="btn btn-primary" onclick="next(2)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- SEC 3: USO -->
+  <div class="section" id="sec3">
+    <div class="section-label">🚗 Uso do Veículo</div>
+
+    <!-- bloco autônomo -->
+    <div id="blocoAut">
+      <div class="card">
+        <div class="question-title" id="usoTitulo">Para que você usa o veículo no trabalho?</div>
+        <div class="question-sub" id="usoSub">Pode marcar mais de uma opção.</div>
+        <div class="options-list">
+          <div class="option-item check" data-group="uso" data-val="entrega" onclick="toggleChk(this)">
+            <div class="custom-check"></div>
+            <span class="option-text" id="usoEntrega">Entrega de produtos / mercadorias</span>
+          </div>
+          <div class="option-item check" data-group="uso" data-val="equipamentos" onclick="toggleChk(this)">
+            <div class="custom-check"></div>
+            <span class="option-text" id="usoEquip">Transporte de equipamentos / ferramentas</span>
+          </div>
+          <div class="option-item check" data-group="uso" data-val="adaptado" onclick="toggleChk(this)">
+            <div class="custom-check"></div>
+            <span class="option-text" id="usoAdapt">Veículo adaptado para meu negócio</span>
+          </div>
+          <div class="option-item check" data-group="uso" data-val="servicos" onclick="toggleChk(this)">
+            <div class="custom-check"></div>
+            <span class="option-text" id="usoServ">Prestação de serviços gerais</span>
+          </div>
+        </div>
+        <!-- Campo descritivo obrigatório destacado -->
+        <div style="margin-top:16px;padding:16px;background:var(--red-soft);border:2px solid var(--red);border-radius:10px;">
+          <label style="display:block;font-size:13px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;" id="usoDescLabel">
+            ✏️ Descreva com suas palavras como você usa o veículo no trabalho *
+          </label>
+          <textarea id="usoDesc"
+            placeholder="Ex: Uso a Saveiro para entregar cilindros de gás no meu bairro todo dia…"
+            style="width:100%;padding:12px 14px;border:1.5px solid var(--red);border-radius:8px;
+                   font-family:Barlow,sans-serif;font-size:14px;color:var(--text);background:white;
+                   outline:none;resize:vertical;min-height:90px;"
+            oninput="state['usoDesc']=this.value"
+            onfocus="this.style.borderColor='var(--red-dark)';this.style.boxShadow='0 0 0 3px rgba(200,16,46,0.15)'"
+            onblur="this.style.borderColor='var(--red)';this.style.boxShadow='none'"
+          ></textarea>
+          <div style="font-size:12px;color:var(--red);margin-top:6px;" id="usoDescHint">Campo obrigatório para continuar.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="question-title">O veículo é de sua propriedade?</div>
+        <div class="options-list">
+          <div class="option-item" data-group="propriedade" data-val="sim" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">Sim, é meu</span>
+          </div>
+          <div class="option-item" data-group="propriedade" data-val="alugado" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">Alugado / arrendado</span>
+          </div>
+          <div class="option-item" data-group="propriedade" data-val="empresa" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">Da empresa onde trabalho</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- bloco gestor -->
+    <div id="blocoGes" style="display:none">
+      <div class="card">
+        <div class="question-title">Quantos veículos do tipo pesquisado tem na frota?</div>
+        <div class="options-list">
+          <div class="option-item" data-group="qtdFrota" data-val="1a5" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">1 a 5</span>
+          </div>
+          <div class="option-item" data-group="qtdFrota" data-val="6a20" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">6 a 20</span>
+          </div>
+          <div class="option-item" data-group="qtdFrota" data-val="mais20" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">Mais de 20</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="question-title">Você participa das decisões de compra ou renovação da frota?</div>
+        <div class="options-list">
+          <div class="option-item" data-group="decisaoFrota" data-val="principal" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">Sim — sou o decisor principal</span>
+          </div>
+          <div class="option-item" data-group="decisaoFrota" data-val="influencio" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">Sim — participo / influencio</span>
+          </div>
+          <div class="option-item" data-group="decisaoFrota" data-val="nao" onclick="pick(this)">
+            <div class="custom-radio"></div><span class="option-text">Não — não tenho participação</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="question-title">Em média, quantos km o veículo roda por mês no trabalho?</div>
+      <div class="options-list">
+        <div class="option-item" data-group="km" data-val="ate2k" onclick="pick(this)">
+          <div class="custom-radio"></div><span class="option-text">Até 2.000 km</span>
+        </div>
+        <div class="option-item" data-group="km" data-val="2ka5k" onclick="pick(this)">
+          <div class="custom-radio"></div><span class="option-text">2.001 a 5.000 km</span>
+        </div>
+        <div class="option-item" data-group="km" data-val="5ka10k" onclick="pick(this)">
+          <div class="custom-radio"></div><span class="option-text">5.001 a 10.000 km</span>
+        </div>
+        <div class="option-item" data-group="km" data-val="mais10k" onclick="pick(this)">
+          <div class="custom-radio"></div><span class="option-text">Mais de 10.000 km</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Voltar</button>
+      <button class="btn btn-primary" onclick="next(3)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- SEC 4: CONTATO -->
+  <div class="section" id="sec4">
+    <div class="section-label">📋 Seus Dados</div>
+    <div class="card">
+      <div class="question-title">Quase lá! Só precisamos dos seus dados para entrar em contato.</div>
+      <div class="question-sub">Tudo confidencial — usado exclusivamente para esta pesquisa.</div>
+      <div style="display:flex;flex-direction:column;gap:13px;margin-top:10px">
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label">Nome completo *</label>
+            <input type="text" id="fNome" placeholder="Seu nome completo">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Idade *</label>
+            <input type="number" id="fIdade" placeholder="Ex: 38" min="18" max="99">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label">Cidade *</label>
+            <input type="text" id="fCidade" placeholder="Sua cidade">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Estado / Província</label>
+            <input type="text" id="fEstado" placeholder="Ex: SP / Buenos Aires">
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">WhatsApp / Telefone *</label>
+          <input type="tel" id="fTel" placeholder="(  ) 00000-0000">
+        </div>
+        <div class="input-group">
+          <label class="input-label">E-mail</label>
+          <input type="email" id="fEmail" placeholder="seu@email.com">
+        </div>
+        <div class="input-group">
+          <label class="input-label" id="labelContato">Melhor dia e horário para entrarmos em contato? *</label>
+          <input type="text" id="fHorario" placeholder="Ex: Segunda a sexta, depois das 18h…">
+          <span style="font-size:11px;color:var(--red);margin-top:3px;font-weight:600;" id="hintContato">Vamos ligar ou mandar mensagem para explicar a pesquisa e agendar a entrevista.</span>
+        </div>
+        <div class="input-group">
+          <label class="input-label" id="labelDisp">Disponibilidade para a entrevista (08 a 11 de junho)</label>
+          <input type="text" id="fDisp" placeholder="Ex: manhã, tarde a partir das 14h…">
+        </div>
+        <div class="input-group">
+          <label class="input-label" id="labelObs">Observações</label>
+          <textarea id="fObs" placeholder="Fale um pouco sobre seu veículo e como você o usa no dia a dia…"></textarea>
+        </div>
+      </div>
+      <div class="alert alert-info" style="margin-top:14px">
+        <span class="alert-icon">🎁</span>
+        <span id="incentivoTxt">Você receberá um incentivo após a conclusão da entrevista. Nosso time confirmará o valor ao entrar em contato.</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Voltar</button>
+      <button class="btn btn-primary" onclick="submitForm()">Enviar inscrição ✓</button>
+    </div>
+  </div>
+
+  <!-- APROVADO -->
+  <div class="result-card" id="resultOk">
+    <div class="result-icon">🎉</div>
+    <div class="tag-badge green">Pré-aprovado!</div>
+    <div class="result-title">Você está dentro do perfil!</div>
+    <div class="result-body">Ótima notícia! Entraremos em contato em breve pelo WhatsApp ou e-mail para confirmar sua entrevista e detalhar os próximos passos.</div>
+    <div class="result-detail">
+      <strong>Resumo da inscrição</strong>
+      <span id="resumoTexto"></span>
+    </div>
+    <p class="result-meta">📅 Entrevista: 08 a 11 de junho &nbsp;|&nbsp; ⏱️ ~1 hora &nbsp;|&nbsp; 💻 Online (Zoom)</p>
+  </div>
+
+  <!-- NÃO ELEGÍVEL -->
+  <div class="encerrado" id="resultFora">
+    <div class="result-icon">🙏</div>
+    <div class="tag-badge red">Perfil não elegível</div>
+    <div class="result-title">Obrigado pelo seu tempo!</div>
+    <div class="result-body">Infelizmente seu perfil não se enquadra nos critérios desta pesquisa específica. Ficamos gratos pela atenção e podemos entrar em contato em estudos futuros.</div>
+  </div>
+
+</div><!-- /form-wrap -->
+
+<script>
+  // ── state ──────────────────────────────────────────────────────────────────
+  const state = {};          // stores all selections: { group: value, ... }
+  const checks = {};         // stores checkboxes: { group: [val, val] }
+  let currentSec = 0;
+
+  const TOTAL = 5;
+
+  // ── pick (radio-style) ─────────────────────────────────────────────────────
+  function pick(el) {
+    const group = el.dataset.group;
+    const val   = el.dataset.val;
+    // deselect others in group
+    document.querySelectorAll(`.option-item[data-group="${group}"]`).forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    state[group] = val;
+  }
+
+  // ── toggleChk (checkbox-style) ─────────────────────────────────────────────
+  function toggleChk(el) {
+    const group = el.dataset.group;
+    const val   = el.dataset.val;
+    el.classList.toggle('selected');
+    if (!checks[group]) checks[group] = [];
+    if (el.classList.contains('selected')) {
+      if (!checks[group].includes(val)) checks[group].push(val);
+    } else {
+      checks[group] = checks[group].filter(v => v !== val);
+    }
+  }
+
+  // ── navigation ─────────────────────────────────────────────────────────────
+  function goTo(n) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec' + n).classList.add('active');
+    updateProgress(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    currentSec = n;
+  }
+
+  function updateProgress(step) {
+    const pct = Math.max(Math.round((step / (TOTAL - 1)) * 100), 5);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = `Etapa ${step + 1} de ${TOTAL}`;
+  }
+
+  function encerrar() {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('resultFora').style.display = 'block';
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressCount').textContent = 'Concluído';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── build model options based on country ──────────────────────────────────
+  function buildModelos() {
+    const isBR = state['pais'] === 'br';
+    const modelos = isBR
+      ? ['Saveiro', 'Montana', 'Strada']
+      : ['Foton', 'JAC', 'Sinotruk', 'Iveco', 'Mercedes-Benz', 'Volkswagen', 'Renault', 'Fiat', 'Peugeot', 'Citroën', 'JMC', 'Maxus', 'Saveiro', 'Montana', 'Strada'];
+
+    const container = document.getElementById('modeloList');
+    container.innerHTML = '';
+    checks['modelo'] = [];
+    state['modeloOutro'] = '';
+
+    modelos.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'option-item check';
+      div.dataset.group = 'modelo';
+      div.dataset.val = m.toLowerCase();
+      div.onclick = function() { toggleChk(this); };
+      div.innerHTML = `<div class="custom-check"></div><span class="option-text">${m}</span>`;
+      container.appendChild(div);
+    });
+
+    // "Outra marca" option with inline text input
+    const outraLabel = isBR ? 'Outro modelo:' : 'Otra marca:';
+    const outraPlaceholder = isBR ? 'Digite o modelo…' : 'Escribí la marca…';
+    const outraDiv = document.createElement('div');
+    outraDiv.className = 'option-item check';
+    outraDiv.dataset.group = 'modelo';
+    outraDiv.dataset.val = 'outro';
+    outraDiv.id = 'modeloOutraItem';
+    outraDiv.style.flexWrap = 'wrap';
+    outraDiv.style.gap = '10px';
+    outraDiv.onclick = function(e) {
+      if (e.target.id === 'modeloOutraInput') return; // don't toggle when typing
+      toggleChk(this);
+      if (this.classList.contains('selected')) {
+        document.getElementById('modeloOutraInput').style.display = 'block';
+        setTimeout(() => document.getElementById('modeloOutraInput').focus(), 50);
+      } else {
+        document.getElementById('modeloOutraInput').style.display = 'none';
+        state['modeloOutro'] = '';
+      }
+    };
+    outraDiv.innerHTML = `
+      <div class="custom-check"></div>
+      <span class="option-text">${outraLabel}</span>
+      <input type="text" id="modeloOutraInput"
+        placeholder="${outraPlaceholder}"
+        style="display:none;flex:1;min-width:140px;padding:6px 10px;border:1.5px solid var(--border);
+               border-radius:6px;font-family:Barlow,sans-serif;font-size:13px;outline:none;
+               background:white;color:var(--text)"
+        oninput="state['modeloOutro']=this.value"
+        onfocus="this.style.borderColor='var(--red)'"
+        onblur="this.style.borderColor='var(--border)'"
+      >`;
+    container.appendChild(outraDiv);
+
+    if (!isBR) {
+      document.getElementById('tituloModelo').textContent = '¿Qué marca de camión o camioneta usás / tiene la flota?';
+      document.getElementById('subModelo').textContent = 'Marcá todas las que correspondan.';
+      document.getElementById('alertModeloTxt').textContent = 'Seleccioná al menos una marca para continuar.';
+    } else {
+      document.getElementById('tituloModelo').textContent = 'Qual o modelo da caminhonete?';
+      document.getElementById('subModelo').textContent = 'Marque todos que forem relevantes.';
+      document.getElementById('alertModeloTxt').textContent = 'Selecione ao menos um modelo para continuar.';
+    }
+  }
+
+  // ── next logic ─────────────────────────────────────────────────────────────
+  function next(from) {
+    if (from === 0) {
+      if (!state['pais']) { alert(t('alertPais')); return; }
+      buildModelos();
+      applyTranslation();
+      goTo(1);
+
+    } else if (from === 1) {
+      if (!state['filtro']) { alert(t('alertFiltro')); return; }
+      if (state['filtro'] === 'sim') { encerrar(); return; }
+      goTo(2);
+
+    } else if (from === 2) {
+      if (!state['perfil']) { alert(t('alertPerfil')); return; }
+      if (state['perfil'] === 'outro') { encerrar(); return; }
+      if (!checks['modelo'] || checks['modelo'].length === 0) {
+        alert(t('alertModelo')); return;
+      }
+      document.getElementById('blocoAut').style.display = state['perfil'] === 'autonomo' ? 'block' : 'none';
+      document.getElementById('blocoGes').style.display = state['perfil'] === 'gestor'   ? 'block' : 'none';
+      goTo(3);
+
+    } else if (from === 3) {
+      if (state['perfil'] === 'gestor' && state['decisaoFrota'] === 'nao') {
+        encerrar(); return;
+      }
+      goTo(4);
+    }
+  }
+
+  // ── COLE AQUI A URL DO SEU APPS SCRIPT (passo 6 das instrucoes) ──────────
+  const APPS_SCRIPT_URL = 'COLE_A_URL_AQUI';
+
+  // ── Translation strings ───────────────────────────────────────────────────
+  const i18n = {
+    pt: {
+      progressLabel: 'Progresso',
+      headerTitle: 'Formulário de<br>Pré-Triagem',
+      headerSub: 'Pesquisa sobre Veículos Leves — Brasil &amp; Argentina<br>Leva menos de 3 minutos. Responda com atenção.',
+      sec0label: '🌎 Localização',
+      sec0q: 'Em qual país você mora e trabalha?',
+      sec0sub: 'Isso define quais perguntas serão exibidas.',
+      sec1label: '🔒 Filtro Obrigatório',
+      sec1q: 'Alguém na sua casa ou no seu relacionamento próximo trabalha em alguma dessas áreas?',
+      sec1sub: 'Marque SIM se houver qualquer pessoa próxima.',
+      filtroSim: 'Pesquisa de mercado / Marketing / Publicidade / TV / Rádio',
+      filtroNao: 'Não, nenhuma dessas áreas',
+      filtroWarn: 'Se você ou alguém próximo trabalha nessas áreas, infelizmente não é possível participar desta pesquisa.',
+      sec2label: '👤 Perfil Profissional',
+      sec2q: 'Como você se define profissionalmente?',
+      perfilAut: 'Autônomo — uso caminhonete/caminhão no trabalho diário',
+      perfilGes: 'Gestor / Responsável pela frota de uma empresa',
+      perfilOut: 'Outro perfil',
+      modeloTituloBR: 'Qual o modelo da caminhonete?',
+      modeloSubBR: 'Marque todos que forem relevantes.',
+      alertModeloBR: 'Selecione ao menos um modelo para continuar.',
+      sec3label: '🚗 Uso do Veículo',
+      usoTitulo: 'Para que você usa o veículo no trabalho?',
+      usoSub: 'Pode marcar mais de uma opção.',
+      usoEntrega: 'Entrega de produtos / mercadorias',
+      usoEquip: 'Transporte de equipamentos / ferramentas',
+      usoAdapt: 'Veículo adaptado para meu negócio',
+      usoServ: 'Prestação de serviços gerais',
+      usoDescLabel: '✏️ Descreva com suas palavras como você usa o veículo no trabalho *',
+      usoDescPlaceholder: 'Ex: Uso a Saveiro para entregar cilindros de gás no meu bairro todo dia…',
+      usoDescHint: 'Campo obrigatório para continuar.',
+      propTitulo: 'O veículo é de sua propriedade?',
+      propSim: 'Sim, é meu',
+      propAlug: 'Alugado / arrendado',
+      propEmp: 'Da empresa onde trabalho',
+      qtdTitulo: 'Quantos veículos do tipo pesquisado tem na frota?',
+      decisaoTitulo: 'Você participa das decisões de compra ou renovação da frota?',
+      decisaoPrinc: 'Sim — sou o decisor principal',
+      decisaoInfl: 'Sim — participo / influencio',
+      decisaoNao: 'Não — não tenho participação',
+      kmTitulo: 'Em média, quantos km o veículo roda por mês no trabalho?',
+      kmAte2: 'Até 2.000 km',
+      km2a5: '2.001 a 5.000 km',
+      km5a10: '5.001 a 10.000 km',
+      kmMais: 'Mais de 10.000 km',
+      sec4label: '📋 Seus Dados',
+      sec4titulo: 'Quase lá! Só precisamos dos seus dados para entrar em contato.',
+      sec4sub: 'Tudo confidencial — usado exclusivamente para esta pesquisa.',
+      labelNome: 'Nome completo *',
+      placeholderNome: 'Seu nome completo',
+      labelIdade: 'Idade *',
+      placeholderIdade: 'Ex: 38',
+      labelCidade: 'Cidade *',
+      placeholderCidade: 'Sua cidade',
+      labelEstado: 'Estado / Província',
+      placeholderEstado: 'Ex: SP / Buenos Aires',
+      labelTel: 'WhatsApp / Telefone *',
+      placeholderTel: '(  ) 00000-0000',
+      labelEmail: 'E-mail',
+      placeholderEmail: 'seu@email.com',
+      labelContato: 'Melhor dia e horário para entrarmos em contato? *',
+      placeholderContato: 'Ex: Segunda a sexta, depois das 18h…',
+      hintContato: 'Vamos ligar ou mandar mensagem para explicar a pesquisa e agendar a entrevista.',
+      labelDisp: 'Disponibilidade para a entrevista (08 a 11 de junho)',
+      placeholderDisp: 'Ex: manhã, tarde a partir das 14h…',
+      labelObs: 'Observações',
+      placeholderObs: 'Fale um pouco sobre seu veículo e como você o usa no dia a dia…',
+      incentivo: 'Você receberá um incentivo após a conclusão da entrevista. Nosso time confirmará o valor ao entrar em contato.',
+      btnEnviar: 'Enviar inscrição ✓',
+      btnVoltar: '← Voltar',
+      btnContinuar: 'Continuar →',
+      resultOkTag: 'Pré-aprovado!',
+      resultOkTitle: 'Você está dentro do perfil!',
+      resultOkBody: 'Ótima notícia! Entraremos em contato em breve pelo WhatsApp ou e-mail para confirmar sua entrevista e detalhar os próximos passos.',
+      resultOkMeta: '📅 Entrevista: 08 a 11 de junho &nbsp;|&nbsp; ⏱️ ~1 hora &nbsp;|&nbsp; 💻 Online (Zoom)',
+      resultForaTag: 'Perfil não elegível',
+      resultForaTitle: 'Obrigado pelo seu tempo!',
+      resultForaBody: 'Infelizmente seu perfil não se enquadra nos critérios desta pesquisa específica. Ficamos gratos pela atenção e podemos entrar em contato em estudos futuros.',
+      resumoLabel: 'Resumo da inscrição',
+      concluido: 'Concluído',
+      alertPais: 'Selecione o país para continuar.',
+      alertFiltro: 'Responda a pergunta antes de continuar.',
+      alertPerfil: 'Selecione seu perfil profissional.',
+      alertModelo: 'Selecione ao menos um modelo / marca.',
+      alertUsoDesc: 'Por favor, descreva como você usa o veículo (campo obrigatório).',
+      alertContato: 'Preencha ao menos o nome, telefone e melhor horário para contato.',
+      perfilAutLabel: 'Autônomo',
+      perfilGesLabel: 'Gestor de Frota',
+      dispLabel: 'A confirmar',
+    },
+    es: {
+      progressLabel: 'Progreso',
+      headerTitle: 'Formulario de<br>Pre-Selección',
+      headerSub: 'Investigación sobre Vehículos de Trabajo — Argentina<br>Menos de 3 minutos. Respondé con atención.',
+      sec0label: '🌎 Ubicación',
+      sec0q: '¿En qué país vivís y trabajás?',
+      sec0sub: 'Esto define qué preguntas se mostrarán.',
+      sec1label: '🔒 Filtro Obligatorio',
+      sec1q: '¿Alguien en tu casa o en tu círculo cercano trabaja en alguna de estas áreas?',
+      sec1sub: 'Marcá SÍ si hay cualquier persona cercana.',
+      filtroSim: 'Investigación de mercado / Marketing / Publicidad / TV / Radio',
+      filtroNao: 'No, ninguna de esas áreas',
+      filtroWarn: 'Si vos o alguien cercano trabaja en esas áreas, lamentablemente no es posible participar en esta investigación.',
+      sec2label: '👤 Perfil Profesional',
+      sec2q: '¿Cómo te definís profesionalmente?',
+      perfilAut: 'Autónomo — uso camioneta/camión en mi trabajo diario',
+      perfilGes: 'Gestor / Responsable de la flota de una empresa',
+      perfilOut: 'Otro perfil',
+      modeloTituloAR: '¿Qué marca de camión o camioneta usás / tiene la flota?',
+      modeloSubAR: 'Marcá todas las que correspondan.',
+      alertModeloAR: 'Seleccioná al menos una marca para continuar.',
+      sec3label: '🚗 Uso del Vehículo',
+      usoTitulo: '¿Para qué usás el vehículo en tu trabajo?',
+      usoSub: 'Podés marcar más de una opción.',
+      usoEntrega: 'Entrega de productos / mercadería',
+      usoEquip: 'Transporte de equipos / herramientas',
+      usoAdapt: 'Vehículo adaptado para mi negocio',
+      usoServ: 'Prestación de servicios generales',
+      usoDescLabel: '✏️ Describí con tus palabras cómo usás el vehículo en tu trabajo *',
+      usoDescPlaceholder: 'Ej: Uso la Saveiro para entregar garrafas de gas en mi barrio todos los días…',
+      usoDescHint: 'Campo obligatorio para continuar.',
+      propTitulo: '¿El vehículo es de tu propiedad?',
+      propSim: 'Sí, es mío',
+      propAlug: 'Alquilado / arrendado',
+      propEmp: 'De la empresa donde trabajo',
+      qtdTitulo: '¿Cuántos vehículos del tipo investigado tiene la flota?',
+      decisaoTitulo: '¿Participás de las decisiones de compra o renovación de la flota?',
+      decisaoPrinc: 'Sí — soy el decisor principal',
+      decisaoInfl: 'Sí — participo / influyo',
+      decisaoNao: 'No — no tengo participación',
+      kmTitulo: '¿Cuántos km recorre el vehículo por mes en promedio?',
+      kmAte2: 'Hasta 2.000 km',
+      km2a5: '2.001 a 5.000 km',
+      km5a10: '5.001 a 10.000 km',
+      kmMais: 'Más de 10.000 km',
+      sec4label: '📋 Tus Datos',
+      sec4titulo: '¡Casi listo! Solo necesitamos tus datos para contactarte.',
+      sec4sub: 'Todo es confidencial — usado exclusivamente para esta investigación.',
+      labelNome: 'Nombre completo *',
+      placeholderNome: 'Tu nombre completo',
+      labelIdade: 'Edad *',
+      placeholderIdade: 'Ej: 38',
+      labelCidade: 'Ciudad *',
+      placeholderCidade: 'Tu ciudad',
+      labelEstado: 'Provincia',
+      placeholderEstado: 'Ej: Buenos Aires',
+      labelTel: 'WhatsApp / Teléfono *',
+      placeholderTel: '(  ) 0000-0000',
+      labelEmail: 'E-mail',
+      placeholderEmail: 'tu@email.com',
+      labelContato: '¿Cuál es el mejor día y horario para contactarte? *',
+      placeholderContato: 'Ej: Lunes a viernes, después de las 18h…',
+      hintContato: 'Te vamos a llamar o escribir para explicarte la investigación y agendar la entrevista.',
+      labelDisp: 'Disponibilidad para la entrevista (08 al 11 de junio)',
+      placeholderDisp: 'Ej: mañana, tarde a partir de las 14h…',
+      labelObs: 'Observaciones',
+      placeholderObs: 'Contanos un poco sobre tu vehículo y cómo lo usás en el día a día…',
+      incentivo: 'Recibirás un incentivo al completar la entrevista. Nuestro equipo confirmará el monto al contactarte.',
+      btnEnviar: 'Enviar inscripción ✓',
+      btnVoltar: '← Volver',
+      btnContinuar: 'Continuar →',
+      resultOkTag: '¡Pre-aprobado!',
+      resultOkTitle: '¡Estás dentro del perfil!',
+      resultOkBody: '¡Buenas noticias! Nos pondremos en contacto pronto por WhatsApp o e-mail para confirmar tu entrevista y los próximos pasos.',
+      resultOkMeta: '📅 Entrevista: 08 al 11 de junio &nbsp;|&nbsp; ⏱️ ~1 hora &nbsp;|&nbsp; 💻 Online (Zoom)',
+      resultForaTag: 'Perfil no elegible',
+      resultForaTitle: '¡Gracias por tu tiempo!',
+      resultForaBody: 'Lamentablemente tu perfil no se ajusta a los criterios de esta investigación específica. ¡Gracias por la atención! Podemos contactarte para estudios futuros.',
+      resumoLabel: 'Resumen de la inscripción',
+      concluido: 'Completado',
+      alertPais: 'Seleccioná el país para continuar.',
+      alertFiltro: 'Respondé la pregunta antes de continuar.',
+      alertPerfil: 'Seleccioná tu perfil profesional.',
+      alertModelo: 'Seleccioná al menos una marca.',
+      alertUsoDesc: 'Por favor, describí cómo usás el vehículo (campo obligatorio).',
+      alertContato: 'Completá al menos el nombre, teléfono y mejor horario de contacto.',
+      perfilAutLabel: 'Autónomo',
+      perfilGesLabel: 'Gestor de Flota',
+      dispLabel: 'A confirmar',
+    }
+  };
+
+  function getLang() { return state['pais'] === 'ar' ? 'es' : 'pt'; }
+  function t(key) { return i18n[getLang()][key] || i18n['pt'][key] || key; }
+
+  function applyTranslation() {
+    const lang = getLang();
+    const l = i18n[lang];
+
+    // Header
+    document.querySelector('.header h1').innerHTML = l.headerTitle;
+    document.querySelector('.header p').innerHTML = l.headerSub;
+    document.getElementById('progressCount').textContent =
+      lang === 'es' ? 'Paso 1 de 5' : 'Etapa 1 de 5';
+
+    // Sec0
+    document.querySelector('#sec0 .section-label').textContent = l.sec0label;
+    document.querySelector('#sec0 .question-title').textContent = l.sec0q;
+    document.querySelector('#sec0 .question-sub').textContent = l.sec0sub;
+    document.querySelectorAll('#sec0 .btn-primary').forEach(b => b.textContent = l.btnContinuar.replace('→','') + ' →');
+
+    // Sec1
+    document.querySelector('#sec1 .section-label').textContent = l.sec1label;
+    document.querySelector('#sec1 .question-title').textContent = l.sec1q;
+    document.querySelector('#sec1 .question-sub').textContent = l.sec1sub;
+    var filtroOpts = document.querySelectorAll('#sec1 .option-text');
+    if (filtroOpts[0]) filtroOpts[0].textContent = l.filtroSim;
+    if (filtroOpts[1]) filtroOpts[1].textContent = l.filtroNao;
+    document.querySelector('#sec1 .alert-warn').innerHTML = '⚠️ ' + l.filtroWarn;
+
+    // Sec2
+    document.querySelector('#sec2 .section-label').textContent = l.sec2label;
+    document.querySelector('#sec2 .question-title').textContent = l.sec2q;
+    var perfilOpts = document.querySelectorAll('#sec2 > .card:first-of-type .option-text');
+    if (perfilOpts[0]) perfilOpts[0].textContent = l.perfilAut;
+    if (perfilOpts[1]) perfilOpts[1].textContent = l.perfilGes;
+    if (perfilOpts[2]) perfilOpts[2].textContent = l.perfilOut;
+
+    // Sec3
+    document.querySelector('#sec3 .section-label').textContent = l.sec3label;
+    var usoT = document.getElementById('usoTitulo');
+    if (usoT) usoT.textContent = l.usoTitulo;
+    var usoS = document.getElementById('usoSub');
+    if (usoS) usoS.textContent = l.usoSub;
+    var usoE = document.getElementById('usoEntrega');
+    if (usoE) usoE.textContent = l.usoEntrega;
+    var usoEq = document.getElementById('usoEquip');
+    if (usoEq) usoEq.textContent = l.usoEquip;
+    var usoA = document.getElementById('usoAdapt');
+    if (usoA) usoA.textContent = l.usoAdapt;
+    var usoSv = document.getElementById('usoServ');
+    if (usoSv) usoSv.textContent = l.usoServ;
+    var usoDescL = document.getElementById('usoDescLabel');
+    if (usoDescL) usoDescL.textContent = l.usoDescLabel;
+    var usoDescEl = document.getElementById('usoDesc');
+    if (usoDescEl) usoDescEl.placeholder = l.usoDescPlaceholder;
+    var usoDescH = document.getElementById('usoDescHint');
+    if (usoDescH) usoDescH.textContent = l.usoDescHint;
+
+    // prop / km labels
+    var propCards = document.querySelectorAll('#blocoAut .card');
+    if (propCards[1]) {
+      var ptitle = propCards[1].querySelector('.question-title');
+      if (ptitle) ptitle.textContent = l.propTitulo;
+      var propOpts = propCards[1].querySelectorAll('.option-text');
+      if (propOpts[0]) propOpts[0].textContent = l.propSim;
+      if (propOpts[1]) propOpts[1].textContent = l.propAlug;
+      if (propOpts[2]) propOpts[2].textContent = l.propEmp;
+    }
+    // gestor
+    var gesCards = document.querySelectorAll('#blocoGes .card');
+    if (gesCards[0]) {
+      var gt = gesCards[0].querySelector('.question-title');
+      if (gt) gt.textContent = l.qtdTitulo;
+    }
+    if (gesCards[1]) {
+      var dt = gesCards[1].querySelector('.question-title');
+      if (dt) dt.textContent = l.decisaoTitulo;
+      var dOpts = gesCards[1].querySelectorAll('.option-text');
+      if (dOpts[0]) dOpts[0].textContent = l.decisaoPrinc;
+      if (dOpts[1]) dOpts[1].textContent = l.decisaoInfl;
+      if (dOpts[2]) dOpts[2].textContent = l.decisaoNao;
+    }
+    // km card (last card in sec3 before btn-row)
+    var kmCard = document.querySelector('#sec3 > .card:last-of-type');
+    if (kmCard) {
+      var kt = kmCard.querySelector('.question-title');
+      if (kt) kt.textContent = l.kmTitulo;
+      var kOpts = kmCard.querySelectorAll('.option-text');
+      if (kOpts[0]) kOpts[0].textContent = l.kmAte2;
+      if (kOpts[1]) kOpts[1].textContent = l.km2a5;
+      if (kOpts[2]) kOpts[2].textContent = l.km5a10;
+      if (kOpts[3]) kOpts[3].textContent = l.kmMais;
+    }
+
+    // Sec4
+    document.querySelector('#sec4 .section-label').textContent = l.sec4label;
+    document.querySelector('#sec4 .question-title').textContent = l.sec4titulo;
+    document.querySelector('#sec4 .question-sub').textContent = l.sec4sub;
+    setField('fNome', l.labelNome, l.placeholderNome);
+    setField('fIdade', l.labelIdade, l.placeholderIdade);
+    setField('fCidade', l.labelCidade, l.placeholderCidade);
+    setField('fEstado', l.labelEstado, l.placeholderEstado);
+    setField('fTel', l.labelTel, l.placeholderTel);
+    setField('fEmail', l.labelEmail, l.placeholderEmail);
+    setField('fHorario', l.labelContato, l.placeholderContato);
+    var hint = document.getElementById('hintContato');
+    if (hint) hint.textContent = l.hintContato;
+    setField('fDisp', l.labelDisp, l.placeholderDisp);
+    setField('fObs', l.labelObs, l.placeholderObs);
+    var incEl = document.getElementById('incentivoTxt');
+    if (incEl) incEl.textContent = l.incentivo;
+    var btnEnv = document.querySelector('#sec4 .btn-primary');
+    if (btnEnv) btnEnv.textContent = l.btnEnviar;
+
+    // Results
+    document.querySelector('#resultOk .tag-badge').textContent = l.resultOkTag;
+    document.querySelector('#resultOk .result-title').textContent = l.resultOkTitle;
+    document.querySelector('#resultOk .result-body').textContent = l.resultOkBody;
+    var metaEl = document.querySelector('#resultOk .result-meta');
+    if (metaEl) metaEl.innerHTML = l.resultOkMeta;
+    document.querySelector('#resultFora .tag-badge').textContent = l.resultForaTag;
+    document.querySelector('#resultFora .result-title').textContent = l.resultForaTitle;
+    document.querySelector('#resultFora .result-body').textContent = l.resultForaBody;
+
+    // All back/continue buttons in sections
+    document.querySelectorAll('.btn-secondary').forEach(b => { b.textContent = l.btnVoltar; });
+    document.querySelectorAll('.btn-primary:not(#sec4 .btn-primary)').forEach(b => {
+      if (!b.closest('#sec4')) b.textContent = l.btnContinuar;
+    });
+
+    // Progress label
+    document.querySelector('.progress-label').textContent = l.progressLabel;
+  }
+
+  function setField(id, labelText, placeholder) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var group = el.closest('.input-group');
+    if (group) {
+      var lbl = group.querySelector('.input-label, label');
+      if (lbl) lbl.textContent = labelText;
+    }
+    el.placeholder = placeholder;
+  }
+
+  // ── submit ────────────────────────────────────────────────────────────────
+  function submitForm() {
+    const lang    = getLang();
+    const l       = i18n[lang];
+    const nome    = document.getElementById('fNome').value.trim();
+    const tel     = document.getElementById('fTel').value.trim();
+    const horario = document.getElementById('fHorario').value.trim();
+    const usoDesc = (document.getElementById('usoDesc') ? document.getElementById('usoDesc').value.trim() : '') || state['usoDesc'] || '';
+
+    if (!nome || !tel || !horario) { alert(l.alertContato); return; }
+    if (state['perfil'] === 'autonomo' && !usoDesc) { alert(l.alertUsoDesc); return; }
+
+    const perfilVal = state['perfil'];
+    const perfil    = perfilVal === 'autonomo' ? l.perfilAutLabel : l.perfilGesLabel;
+
+    let modelosList = (checks['modelo'] || []).filter(v => v !== 'outro');
+    if (checks['modelo'] && checks['modelo'].includes('outro') && state['modeloOutro']) {
+      modelosList.push(state['modeloOutro']);
+    }
+    const modelos = modelosList.join(', ') || '-';
+
+    let usoList = (checks['uso'] || []).filter(v => v !== 'outro');
+    const usos  = usoList.join(', ') || '-';
+
+    const cidade  = document.getElementById('fCidade').value.trim();
+    const estado  = document.getElementById('fEstado').value.trim();
+    const email   = document.getElementById('fEmail').value.trim();
+    const idade   = document.getElementById('fIdade').value.trim();
+    const obs     = document.getElementById('fObs').value.trim();
+    const disp    = document.getElementById('fDisp') ? document.getElementById('fDisp').value.trim() : '';
+    const km      = state['km'] || '-';
+    const prop    = state['propriedade'] || '-';
+    const qtd     = state['qtdFrota'] || '-';
+    const decisao = state['decisaoFrota'] || '-';
+
+    var resumoHtml =
+      '<br>👤 <b>' + nome + '</b> &nbsp;|&nbsp; 📍 ' + cidade + (estado ? ', '+estado : '') + '<br>' +
+      '🚗 ' + perfil + '<br>' +
+      '🔧 ' + modelos + '<br>' +
+      (perfilVal === 'autonomo' ? '📦 ' + usoDesc + '<br>' : '') +
+      '📞 ' + horario;
+    document.getElementById('resumoTexto').innerHTML = resumoHtml;
+    var resumoStrong = document.querySelector('#resultOk .result-detail strong');
+    if (resumoStrong) resumoStrong.textContent = l.resumoLabel;
+
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('resultOk').style.display = 'block';
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressCount').textContent = l.concluido;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const payload = {
+      timestamp: new Date().toLocaleString('pt-BR'),
+      pais:      state['pais'] === 'br' ? 'Brasil' : 'Argentina',
+      nome, idade, tel, email, cidade, estado, perfil,
+      modelos, uso: usos, usoDescricao: usoDesc,
+      propriedade: prop, kmMes: km, qtdFrota: qtd,
+      decisaoFrota: decisao, horarioContato: horario,
+      disponibilidade: disp, obs
+    };
+
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'COLE_A_URL_AQUI') {
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(function() {});
+    }
+  }
+
+  // ── init ──────────────────────────────────────────────────────────────────
+  updateProgress(0);
+</script>
+</body>
+</html>
